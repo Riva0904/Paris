@@ -17,6 +17,8 @@
   <button class="btn loader-enter" id="loaderEnter" hidden>Enter Presentation</button>
 </div>
 
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 <div class="bg-fx"></div>
 <div class="bg-logo"></div>
 <div class="scanlines"></div>
@@ -73,7 +75,13 @@
         <div class="holo-shine"></div>
       </div>
     </div>
-    <span class="member-tag" id="memberTag"></span>
+    <span class="member-tag" id="memberTag">
+      <span class="tag-text" id="memberTagText"></span>
+      <span class="star-rating" id="memberStars" aria-hidden="true">
+        <span class="star-row star-row-empty">★★★★★</span>
+        <span class="star-row star-row-filled" id="memberStarsFilled">★★★★★</span>
+      </span>
+    </span>
     <h2 class="member-name glitch" id="memberName" data-text=""></h2>
     <div class="member-position" id="memberPosition">
       <span class="pos-icon">⚡</span><span id="posText"></span>

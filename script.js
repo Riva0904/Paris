@@ -32,6 +32,47 @@ const io = new IntersectionObserver((entries) => {
 slides.forEach(s => io.observe(s));
 document.querySelectorAll('.squad-card').forEach(c => io.observe(c));
 
+/* ---------- SCROLL REVEAL (titles + program cards) ---------- */
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in-view'); revealIO.unobserve(e.target); }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section-title, .squad-title, .program-card').forEach((el, i) => {
+  if (el.classList.contains('program-card')) el.style.transitionDelay = (i * 0.1) + 's';
+  revealIO.observe(el);
+});
+
+/* ---------- SCROLL PROGRESS BAR ---------- */
+const scrollProgress = document.getElementById('scrollProgress');
+function updateScrollProgress() {
+  const h = document.documentElement;
+  const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+  scrollProgress.style.width = Math.min(scrolled * 100, 100) + '%';
+}
+window.addEventListener('scroll', updateScrollProgress, { passive: true });
+updateScrollProgress();
+
+/* ---------- CURSOR GLOW ---------- */
+if (!reduceMotion && window.matchMedia('(hover:hover)').matches) {
+  const cursorGlow = document.getElementById('cursorGlow');
+  let gx = 0, gy = 0, cx = 0, cy = 0;
+  window.addEventListener('mousemove', (e) => {
+    gx = e.clientX; gy = e.clientY;
+    cursorGlow.classList.add('active');
+  });
+  document.querySelectorAll('.btn, .frame, .squad-card, .program-card, .nav-link, .social-icon').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorGlow.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursorGlow.classList.remove('hover'));
+  });
+  (function followCursor() {
+    cx += (gx - cx) * 0.18;
+    cy += (gy - cy) * 0.18;
+    cursorGlow.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+    requestAnimationFrame(followCursor);
+  })();
+}
+
 /* ---------- TYPEWRITER ---------- */
 const twEl = document.getElementById('typewriter');
 const twText = 'Team Presentation Dashboard';
@@ -84,7 +125,7 @@ sections.forEach(s => s && spy.observe(s));
 
 /* ---------- CARD TILT + SPOTLIGHT ---------- */
 if (!reduceMotion) {
-  document.querySelectorAll('.frame').forEach(frame => {
+  document.querySelectorAll('.frame, .program-card').forEach(frame => {
     frame.addEventListener('mousemove', (e) => {
       const rect = frame.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -92,12 +133,12 @@ if (!reduceMotion) {
       const cx = rect.width / 2, cy = rect.height / 2;
       const rotY = ((x - cx) / cx) * 6;
       const rotX = -((y - cy) / cy) * 6;
-      frame.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+      frame.style.transform = `perspective(800px) translateY(-6px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
       frame.style.setProperty('--mx', x + 'px');
       frame.style.setProperty('--my', y + 'px');
     });
     frame.addEventListener('mouseleave', () => {
-      frame.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+      frame.style.transform = '';
     });
   });
 }
@@ -141,13 +182,13 @@ const PROGRAMS = {
   function openModal(key) {
     const ids = PROGRAMS[key] || [];
     title.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ` — ${ids.length} Members`;
-    grid.innerHTML = ids.map(id => {
+    grid.innerHTML = ids.map((id, i) => {
       const m = ROSTER[id];
       if (!m) return '';
       const photoHtml = m.photo
         ? `<div class="pr-photo"><img src="${m.photo}" alt="${m.name}"></div>`
         : `<div class="pr-photo pending">photo<br>pending</div>`;
-      return `<div class="pr-card">${photoHtml}<div class="pr-name">${m.name}</div></div>`;
+      return `<div class="pr-card" style="--i:${i}">${photoHtml}<div class="pr-name">${m.name}</div></div>`;
     }).join('');
     modal.classList.add('open');
   }
@@ -174,13 +215,23 @@ const MEMBER_META = {
   abinov: { position: 'Team Member', tag: 'Vice Captain' },
   arun: { position: 'Team Member', tag: 'Vice Captain' }
 };
+function programCount(id) {
+  return ['hackathon', 'football', 'culturals'].reduce((n, key) => n + (PROGRAMS[key].includes(id) ? 1 : 0), 0);
+}
+function ratingFor(id) {
+  const n = programCount(id);
+  if (n >= 3) return 5;
+  if (n === 2) return 4;
+  return 3.5;
+}
 const members = Object.keys(ROSTER)
   .filter(id => ROSTER[id].photo)
   .map(id => ({
     photo: ROSTER[id].photo,
     name: ROSTER[id].name,
     position: (MEMBER_META[id] && MEMBER_META[id].position) || 'Squad Member',
-    tag: (MEMBER_META[id] && MEMBER_META[id].tag) || 'Squad Caption'
+    tag: MEMBER_META[id] && MEMBER_META[id].tag,
+    rating: ratingFor(id)
   }));
 
 (function stormIntro() {
@@ -193,6 +244,8 @@ const members = Object.keys(ROSTER)
   const frame = document.getElementById('photoFrame');
   const photo = document.getElementById('memberPhoto');
   const tagEl = document.getElementById('memberTag');
+  const tagTextEl = document.getElementById('memberTagText');
+  const starsFilledEl = document.getElementById('memberStarsFilled');
   const nameEl = document.getElementById('memberName');
   const posEl = document.getElementById('memberPosition');
   const posText = document.getElementById('posText');
@@ -338,7 +391,13 @@ const members = Object.keys(ROSTER)
     /* text first: caption tag -> name -> position */
     card.classList.add('show');
     await wait(200);
-    tagEl.textContent = m.tag || '';
+    if (m.tag) {
+      tagEl.classList.add('text-mode');
+      tagTextEl.textContent = m.tag;
+    } else {
+      tagEl.classList.remove('text-mode');
+      starsFilledEl.style.width = (m.rating / 5 * 100) + '%';
+    }
     tagEl.classList.add('show');
     await wait(400);
     await typeName(m.name);
@@ -398,6 +457,10 @@ const members = Object.keys(ROSTER)
 })();
 
 /* ---------- SQUAD CARDS DANCE ON BEAT ---------- */
+/* Timer-driven, not Web-Audio-driven: routing introMusic through an
+   AnalyserNode (createMediaElementSource) silently disconnects the
+   element from the default output in some browsers, killing all sound.
+   A plain interval gated on playback state can't touch audio output. */
 (function danceOnBeat() {
   const musicEl = document.getElementById('introMusic');
   const cards = document.querySelectorAll('.squad-card');
@@ -408,21 +471,6 @@ const members = Object.keys(ROSTER)
     c.style.setProperty('--tilt', i % 2 === 0 ? 1 : -1);
   });
 
-  let audioCtx, analyser, dataArray, source;
-  function setup() {
-    if (source) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    source = audioCtx.createMediaElementSource(musicEl);
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
-    analyser.smoothingTimeConstant = 0.6;
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-  }
-
-  let energyAvg = 0;
-  let lastBeat = 0;
   function pulse() {
     cards.forEach(c => {
       c.classList.remove('beat');
@@ -431,27 +479,8 @@ const members = Object.keys(ROSTER)
     });
   }
 
-  function tick() {
-    requestAnimationFrame(tick);
-    if (!source || musicEl.paused) return;
-    analyser.getByteFrequencyData(dataArray);
-    let bass = 0;
-    const bassBins = 6;
-    for (let i = 0; i < bassBins; i++) bass += dataArray[i];
-    bass /= bassBins;
-    energyAvg = energyAvg * 0.93 + bass * 0.07;
-    const now = performance.now();
-    if (bass > energyAvg * 1.35 && bass > 40 && now - lastBeat > 220) {
-      lastBeat = now;
-      pulse();
-    }
-  }
-
-  const start = () => { setup(); if (audioCtx.state === 'suspended') audioCtx.resume(); };
-  document.addEventListener('click', start, { once: true });
-  document.addEventListener('keydown', start, { once: true });
-  document.addEventListener('touchstart', start, { once: true });
-  requestAnimationFrame(tick);
+  const BEAT_MS = 500;
+  setInterval(() => { if (!musicEl.paused) pulse(); }, BEAT_MS);
 })();
 
 /* ---------- PARTICLES (canvas) ---------- */
