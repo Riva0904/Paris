@@ -17,7 +17,12 @@ const loadTimer = setInterval(() => {
 /* ---------- SCROLL REVEAL (slides) ---------- */
 const slides = document.querySelectorAll('.slide');
 const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in-view');
+    const f = e.target.querySelector('.frame');
+    if (f) f.addEventListener('animationend', () => { f.style.animation = ''; }, { once: true });
+  });
 }, { threshold: 0.25 });
 slides.forEach(s => io.observe(s));
 document.querySelectorAll('.squad-card').forEach(c => io.observe(c));
@@ -60,7 +65,7 @@ document.querySelectorAll('.btn').forEach(btn => {
 
 /* ---------- NAV SCROLL SPY ---------- */
 const navLinks = document.querySelectorAll('.nav-link');
-const sections = ['hero', 'intro', 'stats', 'programs', 'gallery'].map(id => document.getElementById(id));
+const sections = ['hero', 'intro', 'programs', 'gallery'].map(id => document.getElementById(id));
 const spy = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -91,30 +96,6 @@ if (!reduceMotion) {
     });
   });
 }
-
-/* ---------- STAT COUNTERS + XP BARS ---------- */
-const statCards = document.querySelectorAll('.stat-card');
-const statIO = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const card = entry.target;
-    const numEl = card.querySelector('.stat-num');
-    const target = parseInt(numEl.dataset.count, 10);
-    const fillEl = card.querySelector('.xp-fill');
-    fillEl.style.width = fillEl.dataset.fill + '%';
-
-    let cur = 0;
-    const step = Math.max(1, Math.ceil(target / 60));
-    const tick = () => {
-      cur = Math.min(target, cur + step);
-      numEl.textContent = cur;
-      if (cur < target) requestAnimationFrame(tick);
-    };
-    tick();
-    statIO.unobserve(card);
-  });
-}, { threshold: 0.4 });
-statCards.forEach(c => statIO.observe(c));
 
 /* ---------- PROGRAMS FILTER ---------- */
 const ROSTER = {
@@ -203,6 +184,7 @@ const members = Object.keys(ROSTER)
 
   const card = document.getElementById('memberCard');
   const ring = stage.querySelector('.member-ring');
+  const shockwave = document.getElementById('shockwave');
   const frame = document.getElementById('photoFrame');
   const photo = document.getElementById('memberPhoto');
   const tagEl = document.getElementById('memberTag');
@@ -341,6 +323,7 @@ const members = Object.keys(ROSTER)
     card.classList.remove('show');
     frame.classList.remove('reveal', 'hovered');
     ring.classList.remove('reveal');
+    shockwave.classList.remove('pulse');
     ring.style.animationDuration = '10s';
     tagEl.classList.remove('show');
     nameEl.classList.remove('pulse');
@@ -365,6 +348,8 @@ const members = Object.keys(ROSTER)
     await lightningStrike();
     frame.classList.add('reveal');
     ring.classList.add('reveal');
+    void shockwave.offsetWidth;
+    shockwave.classList.add('pulse');
     await wait(2400);
   }
 
