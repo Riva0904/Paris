@@ -289,17 +289,8 @@ const members = Object.keys(ROSTER)
     if (muted) stopMusic(); else startMusic();
   });
 
-  /* sound defaults on, but browsers block autoplay until a user gesture */
-  startMusic();
-  const unlockAudio = () => {
-    if (!muted) startMusic();
-    document.removeEventListener('click', unlockAudio);
-    document.removeEventListener('keydown', unlockAudio);
-    document.removeEventListener('touchstart', unlockAudio);
-  };
-  document.addEventListener('click', unlockAudio, { once: true });
-  document.addEventListener('keydown', unlockAudio, { once: true });
-  document.addEventListener('touchstart', unlockAudio, { once: true });
+  /* sound defaults on; only the Enter Presentation click unlocks playback */
+  loaderEnter.addEventListener('click', () => { if (!muted) startMusic(); });
 
   function thunder() {
     if (muted) return;
