@@ -2,17 +2,22 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 
 /* ---------- LOADER ---------- */
 const loader = document.getElementById('loader');
-const pctEl = loader.querySelector('.loader-pct');
+const pctEl = document.getElementById('loaderPct');
+const loaderText = document.getElementById('loaderText');
+const loaderEnter = document.getElementById('loaderEnter');
 let pct = 0;
 const loadTimer = setInterval(() => {
   pct += Math.random() * 18 + 6;
   if (pct >= 100) {
     pct = 100;
     clearInterval(loadTimer);
-    setTimeout(() => loader.classList.add('done'), 300);
+    loaderText.hidden = true;
+    pctEl.hidden = true;
+    loaderEnter.hidden = false;
   }
   pctEl.textContent = Math.floor(pct) + '%';
 }, 180);
+loaderEnter.addEventListener('click', () => loader.classList.add('done'));
 
 /* ---------- SCROLL REVEAL (slides) ---------- */
 const slides = document.querySelectorAll('.slide');
