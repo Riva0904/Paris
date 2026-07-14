@@ -27,7 +27,6 @@
     <li><a href="#hero" class="nav-link active" data-target="hero">Home</a></li>
     <li><a href="#intro" class="nav-link" data-target="intro">Intro</a></li>
     <li><a href="#stats" class="nav-link" data-target="stats">Stats</a></li>
-    <li><a href="#programs" class="nav-link" data-target="programs">Programs</a></li>
     <li><a href="#gallery" class="nav-link" data-target="gallery">Squad</a></li>
   </ul>
   <span class="hud-corner hud-tl"></span>
@@ -54,6 +53,7 @@
 
 <!-- CINEMATIC STORM INTRO -->
 <section id="intro" class="storm-stage">
+  <audio id="introMusic" src="Audio/theme.mp3" loop preload="none"></audio>
   <div class="clouds"></div>
   <div class="fog"></div>
   <div class="hex-grid"></div>
@@ -63,11 +63,13 @@
   <div class="distant-flash" id="distantFlash"></div>
 
   <div class="member-card" id="memberCard">
-    <div class="member-ring"></div>
-    <div class="photo-frame" id="photoFrame">
-      <img id="memberPhoto" src="" alt="">
-      <div class="arc-border"></div>
-      <div class="holo-shine"></div>
+    <div class="photo-stage">
+      <div class="member-ring" id="memberRing"></div>
+      <div class="photo-frame" id="photoFrame">
+        <img id="memberPhoto" src="" alt="">
+        <div class="arc-border"></div>
+        <div class="holo-shine"></div>
+      </div>
     </div>
     <span class="member-tag" id="memberTag"></span>
     <h2 class="member-name glitch" id="memberName" data-text=""></h2>
@@ -76,7 +78,7 @@
     </div>
   </div>
 
-  <button class="btn btn-mute" id="muteBtn"><span>🔇 Sound Off</span></button>
+  <button class="btn btn-mute" id="muteBtn"><span>🔊 Sound On</span></button>
 </section>
 
 <!-- STATS / DASHBOARD -->
@@ -84,7 +86,7 @@
   <h2 class="section-title">Team Stats</h2>
   <div class="stat-grid">
     <div class="stat-card">
-      <div class="stat-num" data-count="15">0</div>
+      <div class="stat-num" data-count="17">0</div>
       <div class="stat-label">Members</div>
       <div class="xp-bar"><div class="xp-fill" data-fill="90"></div></div>
     </div>
@@ -127,13 +129,6 @@
     </button>
   </div>
 
-  <div class="program-results" id="programResults">
-    <div class="program-results-head">
-      <h3 id="programResultsTitle"></h3>
-      <button class="program-close" id="programClose">✕</button>
-    </div>
-    <div class="program-results-grid" id="programResultsGrid"></div>
-  </div>
 </section>
 
 <!-- GALLERY -->
@@ -142,7 +137,7 @@
 
   <section class="slide" data-idx="1">
     <div class="frame game-card">
-      <img src="images/Suriya.jpg" alt="Surya">
+      <img src="images/Surya.jpg" alt="Surya">
       <div class="shine"></div>
       <div class="spotlight"></div>
     </div>
@@ -156,7 +151,7 @@
 
   <section class="slide reverse" data-idx="2">
     <div class="frame game-card">
-      <img src="images/Abinov.jpg" alt="Abhinav">
+      <img src="images/Abhinav.jpg" alt="Abhinav">
       <div class="shine"></div>
       <div class="spotlight"></div>
     </div>
@@ -186,21 +181,21 @@
   <div class="squad-grid">
     <div class="squad-card"><img src="images/Sanju.jpg" alt="Sanju"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Sanju</h4><p>"Discipline built different — grind in silence, let results talk."</p></div></div>
-    <div class="squad-card"><img src="images/Nobel.jpg" alt="Noble"><div class="squad-shine"></div>
+    <div class="squad-card"><img src="images/Noble.jpg" alt="Noble"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Noble</h4><p>"Experience is the loudest kind of confidence."</p></div></div>
     <div class="squad-card"><img src="images/Sukenya.jpg" alt="Sukanya"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Sukanya</h4><p>"Warmth and grit — carries both effortlessly."</p></div></div>
-    <div class="squad-card"><img src="images/Thrakajith.jpg" alt="Tharakjith"><div class="squad-shine"></div>
+    <div class="squad-card"><img src="images/Tharakjith.jpg" alt="Tharakjith"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Tharakjith</h4><p>"Cool under pressure, sharp under fire."</p></div></div>
     <div class="squad-card"><img src="images/Athira.jpg" alt="Athira"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Athira</h4><p>"Shine first, explain later."</p></div></div>
     <div class="squad-card"><img src="images/Abish.jpg" alt="Abish"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Abish</h4><p>"Focused eyes see further than loud voices."</p></div></div>
-    <div class="squad-card"><img src="images/Abishek.jpg" alt="Abhishek"><div class="squad-shine"></div>
+    <div class="squad-card"><img src="images/Abhishek.jpg" alt="Abhishek"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Abhishek</h4><p>"Every rep counts — consistency is the cheat code."</p></div></div>
     <div class="squad-card"><img src="images/Minna.jpg" alt="Minna"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Minna</h4><p>"Small steps, unstoppable momentum."</p></div></div>
-    <div class="squad-card"><img src="images/Vanthana.jpg" alt="Vandana"><div class="squad-shine"></div>
+    <div class="squad-card"><img src="images/Vandana.jpg" alt="Vandana"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Vandana</h4><p>"Chase the vision, not the validation."</p></div></div>
     <div class="squad-card"><img src="images/Jinu1.jpg" alt="Jinu"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Jinu</h4><p>"Grace is a power move."</p></div></div>
@@ -208,6 +203,10 @@
       <div class="squad-caption"><h4>Tom Willems</h4><p>"Show up loud, show up ready."</p></div></div>
     <div class="squad-card"><img src="images/Akhila.jpg" alt="Akhila"><div class="squad-shine"></div>
       <div class="squad-caption"><h4>Akhila</h4><p>"Bold moves, quiet confidence."</p></div></div>
+    <div class="squad-card"><img src="images/Anith.jpg" alt="Anith"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Anith</h4><p>"Steady hands, sharper mind."</p></div></div>
+    <div class="squad-card"><img src="images/Ajith.jpg" alt="Ajith"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Ajith</h4><p>"Push limits, then push again."</p></div></div>
   </div>
 </main>
 
@@ -220,6 +219,18 @@
   </div>
   <p>&copy; 2026 Paris Powershell — Team Presentation</p>
 </footer>
+
+<!-- PROGRAM POPUP -->
+<div class="program-modal" id="programModal">
+  <div class="program-modal-backdrop" id="programBackdrop"></div>
+  <div class="program-modal-card">
+    <div class="program-results-head">
+      <h3 id="programResultsTitle"></h3>
+      <button class="program-close" id="programClose">✕</button>
+    </div>
+    <div class="program-results-grid" id="programResultsGrid"></div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

@@ -118,18 +118,18 @@ statCards.forEach(c => statIO.observe(c));
 
 /* ---------- PROGRAMS FILTER ---------- */
 const ROSTER = {
-  suriya:     { name: 'Surya',       photo: 'images/Suriya.jpg' },
-  abinov:     { name: 'Abhinav',     photo: 'images/Abinov.jpg' },
+  suriya:     { name: 'Surya',       photo: 'images/Surya.jpg' },
+  abinov:     { name: 'Abhinav',     photo: 'images/Abhinav.jpg' },
   arun:       { name: 'Arun',        photo: 'images/Arun.jpg' },
   sanju:      { name: 'Sanju',       photo: 'images/Sanju.jpg' },
-  nobel:      { name: 'Noble',       photo: 'images/Nobel.jpg' },
+  nobel:      { name: 'Noble',       photo: 'images/Noble.jpg' },
   sukenya:    { name: 'Sukanya',     photo: 'images/Sukenya.jpg' },
-  thrakajith: { name: 'Tharakjith',  photo: 'images/Thrakajith.jpg' },
+  thrakajith: { name: 'Tharakjith',  photo: 'images/Tharakjith.jpg' },
   athira:     { name: 'Athira',      photo: 'images/Athira.jpg' },
   abish:      { name: 'Abish',       photo: 'images/Abish.jpg' },
-  abishek:    { name: 'Abhishek',    photo: 'images/Abishek.jpg' },
+  abishek:    { name: 'Abhishek',    photo: 'images/Abhishek.jpg' },
   minna:      { name: 'Minna',       photo: 'images/Minna.jpg' },
-  vanthana:   { name: 'Vandana',     photo: 'images/Vanthana.jpg' },
+  vanthana:   { name: 'Vandana',     photo: 'images/Vandana.jpg' },
   jinu:       { name: 'Jinu',        photo: 'images/Jinu1.jpg' },
   tomwillems: { name: 'Tom Willems', photo: 'images/TomWillems.png' },
   anith:      { name: 'Anith',       photo: 'images/Anith.jpg' },
@@ -145,13 +145,14 @@ const PROGRAMS = {
 
 (function programFilter() {
   const cards = document.querySelectorAll('.program-card');
-  const panel = document.getElementById('programResults');
+  const modal = document.getElementById('programModal');
+  const backdrop = document.getElementById('programBackdrop');
   const title = document.getElementById('programResultsTitle');
   const grid = document.getElementById('programResultsGrid');
   const closeBtn = document.getElementById('programClose');
   if (!cards.length) return;
 
-  function render(key) {
+  function openModal(key) {
     const ids = PROGRAMS[key] || [];
     title.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ` — ${ids.length} Members`;
     grid.innerHTML = ids.map(id => {
@@ -162,26 +163,21 @@ const PROGRAMS = {
         : `<div class="pr-photo pending">photo<br>pending</div>`;
       return `<div class="pr-card">${photoHtml}<div class="pr-name">${m.name}</div></div>`;
     }).join('');
-    panel.classList.add('open');
-    cards.forEach(c => c.classList.toggle('active', c.dataset.program === key));
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    modal.classList.add('open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
   }
 
   cards.forEach(card => {
-    card.addEventListener('click', () => {
-      const key = card.dataset.program;
-      if (card.classList.contains('active')) {
-        panel.classList.remove('open');
-        cards.forEach(c => c.classList.remove('active'));
-      } else {
-        render(key);
-      }
-    });
+    card.addEventListener('click', () => openModal(card.dataset.program));
   });
 
-  closeBtn.addEventListener('click', () => {
-    panel.classList.remove('open');
-    cards.forEach(c => c.classList.remove('active'));
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 })();
 
@@ -217,55 +213,19 @@ const members = Object.keys(ROSTER)
   const distant = document.getElementById('distantFlash');
   const muteBtn = document.getElementById('muteBtn');
 
-  let muted = true;
+  let muted = false;
   let audioCtx = null;
-  let musicNodes = null;
+  const musicEl = document.getElementById('introMusic');
+  musicEl.volume = 0.35;
+  muteBtn.querySelector('span').textContent = '🔊 Sound On';
 
   function startMusic() {
-    if (musicNodes || reduceMotion) return;
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const master = audioCtx.createGain();
-    master.gain.value = 0;
-    master.connect(audioCtx.destination);
-    master.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 1.5);
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 400;
-    filter.connect(master);
-
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = 0.06;
-    lfoGain.gain.value = 220;
-    lfo.connect(lfoGain).connect(filter.frequency);
-    lfo.start();
-
-    const freqs = [55, 82.5, 110, 164.8];
-    const oscs = freqs.map((f, i) => {
-      const osc = audioCtx.createOscillator();
-      osc.type = i % 2 === 0 ? 'sawtooth' : 'sine';
-      osc.frequency.value = f;
-      osc.detune.value = (Math.random() - 0.5) * 6;
-      osc.connect(filter);
-      osc.start();
-      return osc;
-    });
-
-    musicNodes = { master, filter, lfo, oscs };
+    if (reduceMotion) return;
+    musicEl.play().catch(() => { /* blocked until user gesture; retried below */ });
   }
 
   function stopMusic() {
-    if (!musicNodes) return;
-    const { master, lfo, oscs } = musicNodes;
-    const now = audioCtx.currentTime;
-    master.gain.cancelScheduledValues(now);
-    master.gain.setValueAtTime(master.gain.value, now);
-    master.gain.linearRampToValueAtTime(0, now + 0.6);
-    setTimeout(() => {
-      try { lfo.stop(); oscs.forEach(o => o.stop()); } catch (e) { /* already stopped */ }
-    }, 700);
-    musicNodes = null;
+    musicEl.pause();
   }
 
   muteBtn.addEventListener('click', () => {
@@ -273,6 +233,18 @@ const members = Object.keys(ROSTER)
     muteBtn.querySelector('span').textContent = muted ? '🔇 Sound Off' : '🔊 Sound On';
     if (muted) stopMusic(); else startMusic();
   });
+
+  /* sound defaults on, but browsers block autoplay until a user gesture */
+  startMusic();
+  const unlockAudio = () => {
+    if (!muted) startMusic();
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('keydown', unlockAudio);
+    document.removeEventListener('touchstart', unlockAudio);
+  };
+  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('keydown', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio, { once: true });
 
   function thunder() {
     if (muted || reduceMotion) return;
@@ -368,6 +340,7 @@ const members = Object.keys(ROSTER)
   async function playMember(m) {
     card.classList.remove('show');
     frame.classList.remove('reveal', 'hovered');
+    ring.classList.remove('reveal');
     ring.style.animationDuration = '10s';
     tagEl.classList.remove('show');
     nameEl.classList.remove('pulse');
@@ -391,6 +364,7 @@ const members = Object.keys(ROSTER)
     /* then the photo lands with the thunder strike */
     await lightningStrike();
     frame.classList.add('reveal');
+    ring.classList.add('reveal');
     await wait(2400);
   }
 

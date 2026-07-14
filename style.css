@@ -323,11 +323,19 @@ body{
 }
 .member-card.show{ opacity:1; }
 
+.photo-stage{
+  position:relative; width:440px; height:440px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+
 .member-ring{
-  position:absolute; top:-30px; width:440px; height:440px; border-radius:50%;
+  position:absolute; top:50%; left:50%; width:440px; height:440px; border-radius:50%;
   border:1px dashed rgba(0,229,255,.4);
+  transform:translate(-50%,-50%);
+  opacity:0; transition:opacity .5s ease;
   animation:spin 10s linear infinite;
 }
+.member-ring.reveal{ opacity:1; }
 .member-card.show .member-ring{ animation:spin 6s linear infinite; }
 
 .photo-frame{
@@ -403,7 +411,8 @@ body{
 }
 
 @media (max-width:640px){
-  .member-ring{ width:260px; height:260px; top:-15px; }
+  .photo-stage{ width:260px; height:260px; }
+  .member-ring{ width:260px; height:260px; }
   .photo-frame{ width:210px; height:210px; }
 }
 
@@ -458,11 +467,22 @@ body{
 .program-card h3{ font-size:1.15rem; letter-spacing:.06em; margin-bottom:.5rem; }
 .program-card p{ color:var(--muted); font-size:.85rem; }
 
-.program-results{
-  margin-top:2.5rem; max-height:0; overflow:hidden; opacity:0;
-  transition:max-height .5s ease, opacity .4s ease, margin-top .5s ease;
+.program-modal{
+  position:fixed; inset:0; z-index:200;
+  display:flex; align-items:center; justify-content:center; padding:1.5rem;
+  opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;
 }
-.program-results.open{ max-height:2000px; opacity:1; }
+.program-modal.open{ opacity:1; visibility:visible; }
+.program-modal-backdrop{
+  position:absolute; inset:0; background:rgba(2,4,12,.8); backdrop-filter:blur(6px);
+}
+.program-modal-card{
+  position:relative; z-index:1; width:100%; max-width:640px; max-height:80vh; overflow-y:auto;
+  background:#0a0e1c; border:1px solid rgba(0,229,255,.3); border-radius:16px;
+  padding:1.75rem; box-shadow:0 0 60px rgba(0,229,255,.25), 0 20px 60px rgba(0,0,0,.6);
+  transform:scale(.9) translateY(20px); transition:transform .35s cubic-bezier(.2,.8,.2,1.1);
+}
+.program-modal.open .program-modal-card{ transform:scale(1) translateY(0); }
 .program-results-head{
   display:flex; align-items:center; justify-content:space-between;
   border-bottom:1px solid rgba(0,229,255,.2); padding-bottom:.75rem; margin-bottom:1.5rem;
