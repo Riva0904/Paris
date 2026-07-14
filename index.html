@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paris Powershell — Team</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" class="loader">
+  <div class="loader-ring"></div>
+  <img src="images/logo.jpg" alt="logo" class="loader-logo">
+  <p class="loader-text">Initializing Presentation<span class="dots"></span></p>
+  <p class="loader-pct">0%</p>
+</div>
+
+<div class="bg-fx"></div>
+<div class="scanlines"></div>
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-brand"><span class="brand-dot"></span>PARIS_PS</div>
+  <ul class="nav-links">
+    <li><a href="#hero" class="nav-link active" data-target="hero">Home</a></li>
+    <li><a href="#intro" class="nav-link" data-target="intro">Intro</a></li>
+    <li><a href="#stats" class="nav-link" data-target="stats">Stats</a></li>
+    <li><a href="#programs" class="nav-link" data-target="programs">Programs</a></li>
+    <li><a href="#gallery" class="nav-link" data-target="gallery">Squad</a></li>
+  </ul>
+  <span class="hud-corner hud-tl"></span>
+  <span class="hud-corner hud-tr"></span>
+</nav>
+
+<!-- HERO -->
+<header id="hero" class="hero">
+  <div class="cyber-grid"></div>
+  <div class="ring ring-1"></div>
+  <div class="ring ring-2"></div>
+  <div class="ring ring-3"></div>
+
+  <img src="images/logo.jpg" alt="Paris Powershell Team Logo" class="team-logo">
+  <h1 class="hero-title glitch" data-text="PARIS POWERSHELL">PARIS POWERSHELL</h1>
+  <p class="hero-sub"><span id="typewriter"></span><span class="cursor">|</span></p>
+
+  <button class="btn btn-primary" id="startBtn">
+    <span>Start Presentation</span>
+  </button>
+
+  <div class="scroll-cue"><span></span></div>
+</header>
+
+<!-- CINEMATIC STORM INTRO -->
+<section id="intro" class="storm-stage">
+  <div class="clouds"></div>
+  <div class="fog"></div>
+  <div class="hex-grid"></div>
+  <div class="rain"></div>
+  <canvas id="stormfx"></canvas>
+  <div class="flash" id="flash"></div>
+  <div class="distant-flash" id="distantFlash"></div>
+
+  <div class="member-card" id="memberCard">
+    <div class="member-ring"></div>
+    <div class="photo-frame" id="photoFrame">
+      <img id="memberPhoto" src="" alt="">
+      <div class="arc-border"></div>
+      <div class="holo-shine"></div>
+    </div>
+    <span class="member-tag" id="memberTag"></span>
+    <h2 class="member-name glitch" id="memberName" data-text=""></h2>
+    <div class="member-position" id="memberPosition">
+      <span class="pos-icon">⚡</span><span id="posText"></span>
+    </div>
+  </div>
+
+  <button class="btn btn-mute" id="muteBtn"><span>🔇 Sound Off</span></button>
+</section>
+
+<!-- STATS / DASHBOARD -->
+<section id="stats" class="stats">
+  <h2 class="section-title">Team Stats</h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num" data-count="15">0</div>
+      <div class="stat-label">Members</div>
+      <div class="xp-bar"><div class="xp-fill" data-fill="90"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-count="120">0</div>
+      <div class="stat-label">Scripts Automated</div>
+      <div class="xp-bar"><div class="xp-fill" data-fill="75"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-count="99">0</div>
+      <div class="stat-label">Uptime %</div>
+      <div class="xp-bar"><div class="xp-fill" data-fill="99"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-count="24">0</div>
+      <div class="stat-label">Missions Cleared</div>
+      <div class="xp-bar"><div class="xp-fill" data-fill="60"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section id="programs" class="programs">
+  <h2 class="section-title">Programs We're In</h2>
+  <div class="program-grid">
+    <button class="program-card" data-program="hackathon">
+      <div class="program-icon">💻</div>
+      <h3>Fullstack Hackathon</h3>
+      <p>Build. Break. Ship. Repeat.</p>
+    </button>
+    <button class="program-card" data-program="football">
+      <div class="program-icon">⚽</div>
+      <h3>Football</h3>
+      <p>One team, one goal, all heart.</p>
+    </button>
+    <button class="program-card" data-program="culturals">
+      <div class="program-icon">🎭</div>
+      <h3>Culturals</h3>
+      <p>On stage, in sync, all-in.</p>
+    </button>
+  </div>
+
+  <div class="program-results" id="programResults">
+    <div class="program-results-head">
+      <h3 id="programResultsTitle"></h3>
+      <button class="program-close" id="programClose">✕</button>
+    </div>
+    <div class="program-results-grid" id="programResultsGrid"></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<main id="gallery" class="gallery">
+  <h2 class="section-title">Squad</h2>
+
+  <section class="slide" data-idx="1">
+    <div class="frame game-card">
+      <img src="images/Suriya.jpg" alt="Surya">
+      <div class="shine"></div>
+      <div class="spotlight"></div>
+    </div>
+    <div class="caption">
+      <span class="caption-index">01</span>
+      <span class="caption-tag">Team Caption</span>
+      <h2>Surya</h2>
+      <p>"Alone we can do so little; together we can do so much." — the strength behind every team.</p>
+    </div>
+  </section>
+
+  <section class="slide reverse" data-idx="2">
+    <div class="frame game-card">
+      <img src="images/Abinov.jpg" alt="Abhinav">
+      <div class="shine"></div>
+      <div class="spotlight"></div>
+    </div>
+    <div class="caption">
+      <span class="caption-index">02</span>
+      <span class="caption-tag">Wise Caption</span>
+      <h2>Abhinav</h2>
+      <p>"A smile is the shortest distance between two hearts." — warmth found on a cold hilltop morning.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-idx="3">
+    <div class="frame game-card">
+      <img src="images/Arun.jpg" alt="Arun">
+      <div class="shine"></div>
+      <div class="spotlight"></div>
+    </div>
+    <div class="caption">
+      <span class="caption-index">03</span>
+      <span class="caption-tag">Wise Caption</span>
+      <h2>Arun</h2>
+      <p>"Discipline is the bridge between goals and accomplishment."</p>
+    </div>
+  </section>
+
+  <h3 class="squad-title">Full Squad</h3>
+  <div class="squad-grid">
+    <div class="squad-card"><img src="images/Sanju.jpg" alt="Sanju"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Sanju</h4><p>"Discipline built different — grind in silence, let results talk."</p></div></div>
+    <div class="squad-card"><img src="images/Nobel.jpg" alt="Nobel"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Nobel</h4><p>"Experience is the loudest kind of confidence."</p></div></div>
+    <div class="squad-card"><img src="images/Sukenya.jpg" alt="Sukanya"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Sukanya</h4><p>"Warmth and grit — carries both effortlessly."</p></div></div>
+    <div class="squad-card"><img src="images/Thrakajith.jpg" alt="Tharikjith"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Tharikjith</h4><p>"Cool under pressure, sharp under fire."</p></div></div>
+    <div class="squad-card"><img src="images/Athira.jpg" alt="Athira"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Athira</h4><p>"Shine first, explain later."</p></div></div>
+    <div class="squad-card"><img src="images/Abish.jpg" alt="Abish"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Abish</h4><p>"Focused eyes see further than loud voices."</p></div></div>
+    <div class="squad-card"><img src="images/Abishek.jpg" alt="Abhishek"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Abhishek</h4><p>"Every rep counts — consistency is the cheat code."</p></div></div>
+    <div class="squad-card"><img src="images/Minna.jpg" alt="Minna"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Minna</h4><p>"Small steps, unstoppable momentum."</p></div></div>
+    <div class="squad-card"><img src="images/Vanthana.jpg" alt="Vandana"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Vandana</h4><p>"Chase the vision, not the validation."</p></div></div>
+    <div class="squad-card"><img src="images/Jinu1.jpg" alt="Jinu"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Jinu</h4><p>"Grace is a power move."</p></div></div>
+    <div class="squad-card"><img src="images/Jinu2.jpg" alt="Jinu"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Jinu</h4><p>"Consistency beats intensity, every single time."</p></div></div>
+    <div class="squad-card"><img src="images/TomWillems.png" alt="Tom Willems"><div class="squad-shine"></div>
+      <div class="squad-caption"><h4>Tom Willems</h4><p>"Show up loud, show up ready."</p></div></div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot-divider"></div>
+  <div class="foot-socials">
+    <span class="social-icon">GH</span>
+    <span class="social-icon">LI</span>
+    <span class="social-icon">X</span>
+  </div>
+  <p>&copy; 2026 Paris Powershell — Team Presentation</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
