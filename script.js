@@ -251,7 +251,23 @@ const members = Object.keys(ROSTER)
   const posText = document.getElementById('posText');
   const flash = document.getElementById('flash');
   const distant = document.getElementById('distantFlash');
+  const bolt = document.getElementById('bolt');
+  const rain = stage.querySelector('.rain');
   const muteBtn = document.getElementById('muteBtn');
+
+  /* ambient embers drifting up through the storm */
+  const embersWrap = document.getElementById('embers');
+  if (embersWrap && !reduceMotion) {
+    for (let i = 0; i < 18; i++) {
+      const e = document.createElement('span');
+      e.className = 'ember';
+      e.style.left = Math.random() * 100 + '%';
+      e.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+      e.style.animationDuration = (7 + Math.random() * 9) + 's';
+      e.style.animationDelay = (Math.random() * 9) + 's';
+      embersWrap.appendChild(e);
+    }
+  }
 
   let muted = false;
   let audioCtx = null;
@@ -366,10 +382,13 @@ const members = Object.keys(ROSTER)
   async function lightningStrike() {
     stage.classList.add('shake');
     flash.classList.remove('active'); void flash.offsetWidth; flash.classList.add('active');
+    bolt.classList.remove('active'); void bolt.offsetWidth; bolt.classList.add('active');
+    if (rain) rain.classList.add('intense');
     thunder();
     burst();
     await wait(400);
     stage.classList.remove('shake');
+    if (rain) rain.classList.remove('intense');
   }
 
   function distantFlicker() {
@@ -406,6 +425,10 @@ const members = Object.keys(ROSTER)
     posText.textContent = m.position;
     posEl.classList.add('show');
     await wait(600);
+
+    /* charge-up: ring spins up fast right before the strike lands */
+    ring.style.animationDuration = '0.8s';
+    await wait(350);
 
     /* then the photo lands with the thunder strike */
     await lightningStrike();
@@ -454,33 +477,6 @@ const members = Object.keys(ROSTER)
   introIO.observe(stage);
 
   setInterval(() => { if (Math.random() < 0.3) distantFlicker(); }, 5000);
-})();
-
-/* ---------- SQUAD CARDS DANCE ON BEAT ---------- */
-/* Timer-driven, not Web-Audio-driven: routing introMusic through an
-   AnalyserNode (createMediaElementSource) silently disconnects the
-   element from the default output in some browsers, killing all sound.
-   A plain interval gated on playback state can't touch audio output. */
-(function danceOnBeat() {
-  const musicEl = document.getElementById('introMusic');
-  const cards = document.querySelectorAll('.squad-card');
-  if (!musicEl || !cards.length || reduceMotion) return;
-
-  cards.forEach((c, i) => {
-    c.style.setProperty('--i', i % 12);
-    c.style.setProperty('--tilt', i % 2 === 0 ? 1 : -1);
-  });
-
-  function pulse() {
-    cards.forEach(c => {
-      c.classList.remove('beat');
-      void c.offsetWidth;
-      c.classList.add('beat');
-    });
-  }
-
-  const BEAT_MS = 500;
-  setInterval(() => { if (!musicEl.paused) pulse(); }, BEAT_MS);
 })();
 
 /* ---------- PARTICLES (canvas) ---------- */

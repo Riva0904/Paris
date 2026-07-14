@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Paris Powershell — Team</title>
+<link rel="preload" href="Audio/theme.mp3" as="audio">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -56,7 +57,7 @@
 
 <!-- CINEMATIC STORM INTRO -->
 <section id="intro" class="storm-stage">
-  <audio id="introMusic" src="Audio/theme.mp3" loop preload="none"></audio>
+  <audio id="introMusic" src="Audio/theme.mp3" loop preload="auto"></audio>
   <div class="clouds"></div>
   <div class="fog"></div>
   <div class="hex-grid"></div>
@@ -64,6 +65,10 @@
   <canvas id="stormfx"></canvas>
   <div class="flash" id="flash"></div>
   <div class="distant-flash" id="distantFlash"></div>
+  <svg class="bolt" id="bolt" viewBox="0 0 100 300" preserveAspectRatio="none">
+    <path d="M52 0 L38 62 L58 70 L28 148 L52 158 L18 300" />
+  </svg>
+  <div class="embers" id="embers"></div>
 
   <div class="member-card" id="memberCard">
     <div class="photo-stage">

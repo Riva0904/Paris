@@ -355,6 +355,44 @@ body{
   100%{ opacity:0; }
 }
 
+.bolt{
+  position:absolute; top:0; left:50%; width:140px; height:75%; transform:translateX(-50%);
+  opacity:0; pointer-events:none; z-index:4;
+  filter:drop-shadow(0 0 10px rgba(190,225,255,.9)) drop-shadow(0 0 22px rgba(120,180,255,.6));
+}
+.bolt path{
+  fill:none; stroke:#eaf7ff; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round;
+  stroke-dasharray:620; stroke-dashoffset:620;
+}
+.bolt.active{ animation:boltFlash .5s ease-out; }
+.bolt.active path{ animation:boltDraw .3s ease-out forwards; }
+@keyframes boltDraw{ to{ stroke-dashoffset:0; } }
+@keyframes boltFlash{
+  0%{ opacity:0; }
+  8%{ opacity:1; }
+  16%{ opacity:.3; }
+  24%{ opacity:.9; }
+  40%{ opacity:0; }
+  100%{ opacity:0; }
+}
+
+.embers{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.ember{
+  position:absolute; bottom:-10px; width:3px; height:3px; border-radius:50%;
+  background:radial-gradient(circle, rgba(0,229,255,.9), rgba(138,43,226,.5) 70%, transparent);
+  box-shadow:0 0 6px rgba(0,229,255,.8);
+  animation:emberRise linear infinite;
+  opacity:0;
+}
+@keyframes emberRise{
+  0%{ transform:translate(0,0); opacity:0; }
+  10%{ opacity:.9; }
+  85%{ opacity:.35; }
+  100%{ transform:translate(var(--drift,20px), -115vh); opacity:0; }
+}
+
+.rain.intense{ opacity:.85; animation-duration:.12s; }
+
 .distant-flash{
   position:absolute; inset:0; z-index:1; background:radial-gradient(circle at 80% 20%, rgba(160,190,255,.5), transparent 40%);
   opacity:0; pointer-events:none;
@@ -722,17 +760,6 @@ body{
   transform:skewX(-20deg); transition:left .8s ease;
 }
 .squad-card:hover .squad-shine{ left:150%; }
-
-.squad-card.beat{
-  animation:cardBeat .5s cubic-bezier(.34,1.56,.64,1) both;
-  animation-delay:calc(var(--i,0) * 0.03s);
-}
-@keyframes cardBeat{
-  0%{ transform:translateY(0) scale(1) rotate(0deg); }
-  35%{ transform:translateY(-9px) scale(1.07) rotate(calc(var(--tilt,1) * -2.5deg)); }
-  65%{ transform:translateY(2px) scale(.97) rotate(calc(var(--tilt,1) * 2deg)); }
-  100%{ transform:translateY(0) scale(1) rotate(0deg); }
-}
 
 /* ---------- FOOTER ---------- */
 .foot{ text-align:center; padding:3rem 1rem 2.5rem; color:var(--muted); font-size:.8rem; letter-spacing:.08em; }
