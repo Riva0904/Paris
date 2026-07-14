@@ -170,9 +170,9 @@ const PROGRAMS = {
 /* ---------- STORM INTRO ---------- */
 /* Reusable: add a {name, tag} override here, or just add to ROSTER above — nothing else needs to change. */
 const MEMBER_META = {
-  suriya: { position: 'Team Lead', tag: 'Team Caption' },
-  abinov: { position: 'Team Member', tag: 'Wise Caption' },
-  arun: { position: 'Team Member', tag: 'Wise Caption' }
+  suriya: { position: 'Team Lead', tag: 'Team Captain' },
+  abinov: { position: 'Team Member', tag: 'Vice Captain' },
+  arun: { position: 'Team Member', tag: 'Vice Captain' }
 };
 const members = Object.keys(ROSTER)
   .filter(id => ROSTER[id].photo)
