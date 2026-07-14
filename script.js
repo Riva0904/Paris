@@ -202,7 +202,6 @@ const members = Object.keys(ROSTER)
   muteBtn.querySelector('span').textContent = '🔊 Sound On';
 
   function startMusic() {
-    if (reduceMotion) return;
     musicEl.play().catch(() => { /* blocked until user gesture; retried below */ });
   }
 
@@ -229,7 +228,7 @@ const members = Object.keys(ROSTER)
   document.addEventListener('touchstart', unlockAudio, { once: true });
 
   function thunder() {
-    if (muted || reduceMotion) return;
+    if (muted) return;
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       const dur = 0.6;
