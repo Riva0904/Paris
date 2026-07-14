@@ -122,9 +122,9 @@ const ROSTER = {
   abinov:     { name: 'Abhinav',     photo: 'images/Abinov.jpg' },
   arun:       { name: 'Arun',        photo: 'images/Arun.jpg' },
   sanju:      { name: 'Sanju',       photo: 'images/Sanju.jpg' },
-  nobel:      { name: 'Nobel',       photo: 'images/Nobel.jpg' },
+  nobel:      { name: 'Noble',       photo: 'images/Nobel.jpg' },
   sukenya:    { name: 'Sukanya',     photo: 'images/Sukenya.jpg' },
-  thrakajith: { name: 'Tharikjith',  photo: 'images/Thrakajith.jpg' },
+  thrakajith: { name: 'Tharakjith',  photo: 'images/Thrakajith.jpg' },
   athira:     { name: 'Athira',      photo: 'images/Athira.jpg' },
   abish:      { name: 'Abish',       photo: 'images/Abish.jpg' },
   abishek:    { name: 'Abhishek',    photo: 'images/Abishek.jpg' },
@@ -134,7 +134,7 @@ const ROSTER = {
   tomwillems: { name: 'Tom Willems', photo: 'images/TomWillems.png' },
   anith:      { name: 'Anith',       photo: 'images/Anith.jpg' },
   ajith:      { name: 'Ajith',       photo: 'images/Ajith.jpg' },
-  akhila:     { name: 'Akhila',      photo: null }
+  akhila:     { name: 'Akhila',      photo: 'images/Akhila.jpg' }
 };
 
 const PROGRAMS = {
@@ -219,9 +219,59 @@ const members = Object.keys(ROSTER)
 
   let muted = true;
   let audioCtx = null;
+  let musicNodes = null;
+
+  function startMusic() {
+    if (musicNodes || reduceMotion) return;
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const master = audioCtx.createGain();
+    master.gain.value = 0;
+    master.connect(audioCtx.destination);
+    master.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 1.5);
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 400;
+    filter.connect(master);
+
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 0.06;
+    lfoGain.gain.value = 220;
+    lfo.connect(lfoGain).connect(filter.frequency);
+    lfo.start();
+
+    const freqs = [55, 82.5, 110, 164.8];
+    const oscs = freqs.map((f, i) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = i % 2 === 0 ? 'sawtooth' : 'sine';
+      osc.frequency.value = f;
+      osc.detune.value = (Math.random() - 0.5) * 6;
+      osc.connect(filter);
+      osc.start();
+      return osc;
+    });
+
+    musicNodes = { master, filter, lfo, oscs };
+  }
+
+  function stopMusic() {
+    if (!musicNodes) return;
+    const { master, lfo, oscs } = musicNodes;
+    const now = audioCtx.currentTime;
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(0, now + 0.6);
+    setTimeout(() => {
+      try { lfo.stop(); oscs.forEach(o => o.stop()); } catch (e) { /* already stopped */ }
+    }, 700);
+    musicNodes = null;
+  }
+
   muteBtn.addEventListener('click', () => {
     muted = !muted;
     muteBtn.querySelector('span').textContent = muted ? '🔇 Sound Off' : '🔊 Sound On';
+    if (muted) stopMusic(); else startMusic();
   });
 
   function thunder() {
