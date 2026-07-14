@@ -652,6 +652,17 @@ body{
 }
 .squad-card:hover .squad-shine{ left:150%; }
 
+.squad-card.beat{
+  animation:cardBeat .5s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay:calc(var(--i,0) * 0.03s);
+}
+@keyframes cardBeat{
+  0%{ transform:translateY(0) scale(1) rotate(0deg); }
+  35%{ transform:translateY(-9px) scale(1.07) rotate(calc(var(--tilt,1) * -2.5deg)); }
+  65%{ transform:translateY(2px) scale(.97) rotate(calc(var(--tilt,1) * 2deg)); }
+  100%{ transform:translateY(0) scale(1) rotate(0deg); }
+}
+
 /* ---------- FOOTER ---------- */
 .foot{ text-align:center; padding:3rem 1rem 2.5rem; color:var(--muted); font-size:.8rem; letter-spacing:.08em; }
 .foot-divider{

@@ -397,6 +397,63 @@ const members = Object.keys(ROSTER)
   setInterval(() => { if (Math.random() < 0.3) distantFlicker(); }, 5000);
 })();
 
+/* ---------- SQUAD CARDS DANCE ON BEAT ---------- */
+(function danceOnBeat() {
+  const musicEl = document.getElementById('introMusic');
+  const cards = document.querySelectorAll('.squad-card');
+  if (!musicEl || !cards.length || reduceMotion) return;
+
+  cards.forEach((c, i) => {
+    c.style.setProperty('--i', i % 12);
+    c.style.setProperty('--tilt', i % 2 === 0 ? 1 : -1);
+  });
+
+  let audioCtx, analyser, dataArray, source;
+  function setup() {
+    if (source) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    source = audioCtx.createMediaElementSource(musicEl);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.6;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+  }
+
+  let energyAvg = 0;
+  let lastBeat = 0;
+  function pulse() {
+    cards.forEach(c => {
+      c.classList.remove('beat');
+      void c.offsetWidth;
+      c.classList.add('beat');
+    });
+  }
+
+  function tick() {
+    requestAnimationFrame(tick);
+    if (!source || musicEl.paused) return;
+    analyser.getByteFrequencyData(dataArray);
+    let bass = 0;
+    const bassBins = 6;
+    for (let i = 0; i < bassBins; i++) bass += dataArray[i];
+    bass /= bassBins;
+    energyAvg = energyAvg * 0.93 + bass * 0.07;
+    const now = performance.now();
+    if (bass > energyAvg * 1.35 && bass > 40 && now - lastBeat > 220) {
+      lastBeat = now;
+      pulse();
+    }
+  }
+
+  const start = () => { setup(); if (audioCtx.state === 'suspended') audioCtx.resume(); };
+  document.addEventListener('click', start, { once: true });
+  document.addEventListener('keydown', start, { once: true });
+  document.addEventListener('touchstart', start, { once: true });
+  requestAnimationFrame(tick);
+})();
+
 /* ---------- PARTICLES (canvas) ---------- */
 if (!reduceMotion) {
   const canvas = document.getElementById('particles');
